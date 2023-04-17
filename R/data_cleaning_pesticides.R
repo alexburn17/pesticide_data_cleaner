@@ -6,31 +6,31 @@ library(dplyr)
 library(ggplot2)
 library(reshape2)
 
-setwd("~/Documents/GitHub/SARE")
+setwd("~/Documents/GitHub/pesticide_data_cleaner")
 
 
 ## Reading in datasets 
 
 
 # Read in Cornell Results Dataset !NOTE! - find more general solution to white space/column headers
-pest_Results <- read.csv("pesticide_data_to_merge/pesticide_results_2021.csv", header = TRUE, 
+pest_Results <- read.csv("data/pesticide_results_2021.csv", header = TRUE, 
                          stringsAsFactors = FALSE, skip = 1)
 # Read in Tosi Datasets 
-tosi_lethal <- read.csv("pesticide_data_to_merge/Tosi_lethal.csv", header = TRUE, stringsAsFactors = FALSE, skip = 1)
+tosi_lethal <- read.csv("data/Tosi_lethal.csv", header = TRUE, stringsAsFactors = FALSE, skip = 1)
 
-tosi_sublethal <- read.csv("pesticide_data_to_merge/Tosi_sublethal.csv", header = TRUE, stringsAsFactors = FALSE)
+tosi_sublethal <- read.csv("data/Tosi_sublethal.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # read in pesticide descriptions
-# pest_descriptions <- read.csv("pesticide_data_to_merge/pestDesc.csv", header = TRUE, stringsAsFactors = FALSE) #seeemed redundant and unused in code
+# pest_descriptions <- read.csv("data/pestDesc.csv", header = TRUE, stringsAsFactors = FALSE) #seeemed redundant and unused in code
 
 # Read in Description Dataset (NHBS descriptions)
-pest_Desc <- read.csv("pesticide_data_to_merge/pestDesc.csv", header = TRUE, stringsAsFactors = FALSE)
+pest_Desc <- read.csv("data/pestDesc.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # Read in additional description information (classification info in Google Sheet from Colin)
-pest_Desc_additionalinfo <- read.csv("pesticide_data_to_merge/pestDesc_additioninfo.csv", header = TRUE, stringsAsFactors = FALSE)
+pest_Desc_additionalinfo <- read.csv("data/pestDesc_additioninfo.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # Read in updated description information - Colin 
-pest_Desc_updated <- read.csv("pesticide_data_to_merge/updated_descriptions_4-1-23.csv")
+pest_Desc_updated <- read.csv("data/updated_descriptions_4-1-23.csv")
 
 ###############################################################################
 # Cleaning Cornell Results Dataset
