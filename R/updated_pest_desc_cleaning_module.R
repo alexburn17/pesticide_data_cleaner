@@ -15,11 +15,4 @@ updated_pest_desc_cleaner <- function(pest_Desc_updated){
   
 }
 
-view(updated_pest_desc_cleaner(pest_Desc_updated))
-
-
-
-#### Original Code #### 
-
-pest_Desc_updated[pest_Desc_updated == " "] <- NA
-pest_Desc_updated[pest_Desc_updated == ""] <- NA
+# view(updated_pest_desc_cleaner(pest_Desc_updated))
