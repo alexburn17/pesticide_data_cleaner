@@ -3,10 +3,10 @@
 ###############################################################################
 # view(pest_Results)
 
-pest_results_cleaner <- function(pest_Results){
+pest_results_cleaner <- function(pesticide_results, long_form = TRUE){
   
   # reading in the data -- is this something I need to do if I've already read the data into the driver? 
-  pest_Results <- read.csv("data/pesticide_results_2021.csv", header = TRUE, stringsAsFactors = FALSE, skip = 1)
+  pest_Results <- read.csv(pesticide_results, header = TRUE, stringsAsFactors = FALSE, skip = 1)
   
   # replace n.d. with NA
   pest_Results[pest_Results == "n.d."] <- NA
@@ -39,7 +39,6 @@ pest_results_cleaner <- function(pest_Results){
       # pull out mass and lod and do out the division
       mass <- as.numeric(df$Mass..g.[loqVals$row])
       scaleNum <- ifelse(search==">ULOQ", 3, 1) # convert scale into row index
-      print(scaleNum)
       lod <- as.numeric(lookup[scaleNum,loqVals$col])
       
       results <- lod/mass
@@ -67,22 +66,29 @@ pest_results_cleaner <- function(pest_Results){
   #getting rid of column "X'
   pest_df$X <- NULL
   
-  str(pest_df)
+  if(long_form == TRUE){
+    
+    # Cornell Results to long form 
+    pest_df_long <- melt(pest_df, 
+                         id.vars = c("File.Name", "Client.ID1", "Client.ID2", "Mass..g.", "scale"))
+    # changing column names 
+    colnames(pest_df_long) # original column names
+    pest_df_long_colnames <- c("file_name", "client_ID1", "client_ID2", "mass_g", "scale", "pesticide_name", "value")
+    
+    colnames(pest_df_long) <- pest_df_long_colnames
+    
+    df_out <- pest_df_long
+  } else{
+    
+    df_out <- pest_df
+    
+  }
   
-  # view(pest_df)
-  
-  
-  # Cornell Results to long form 
-  pest_df_long <- melt(pest_df, 
-                       id.vars = c("File.Name", "Client.ID1", "Client.ID2", "Mass..g.", "scale"))
-  # changing column names 
-  colnames(pest_df_long) # original column names
-  pest_df_long_colnames <- c("file_name", "client_ID1", "client_ID2", "mass_g", "scale", "pesticide_name", "value")
-  
-  colnames(pest_df_long) <- pest_df_long_colnames
   
 
-  return(pest_df_long)
+  
+
+  return(df_out)
   }
 
 # view(pest_results_cleaner(pest_Results))
@@ -91,3 +97,5 @@ pest_results_cleaner <- function(pest_Results){
 
 # !NOTE! -- function appears to be working, but its not replacing the old data with reformatted data. will a newData vector fix this issue? 
           # Tried resolving this issued in the driver script by making the cleaned data its own object. 
+
+
