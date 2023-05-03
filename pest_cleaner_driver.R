@@ -8,6 +8,7 @@ library(reshape2)
 # set working directory
 setwd("~/Documents/GitHub/pesticide_data_cleaner")
 
+
 # Read in Datasets:
 
 ## Read in Cornell Results Dataset !NOTE! - find more general solution to white space/column headers
@@ -28,8 +29,9 @@ pest_Desc_additionalinfo <- read.csv("data/pestDesc_additioninfo.csv", header = 
 pest_Desc_updated <- read.csv("data/updated_descriptions_4-1-23.csv")
 
 
+
 # Source 
-  # Function 
+  ## Function 
 
 source("R/cornell_results_cleaning_module.R")
   pest_Results_cleaned <- pest_results_cleaner(pest_Results)
@@ -47,17 +49,19 @@ source("R/updated_pest_desc_cleaning_module.R")
   pest_Desc_updated_cleaned <- updated_pest_desc_cleaner(pest_Desc_updated)
   
 
-# need to change code (in functions?) so new window is not created ever time a line is run. 
 # !NOTE -- COLIN! -- need to double check where pest_Desc_additionalinfo comes into play, was not cleaned in the modulated functions 
   
   
-# removing old datasets 
+# Removing Old Datasets 
 rm(pest_Results, tosi_lethal, tosi_sublethal, pest_Desc, pest_Desc_updated)
   
 source("R/merging_cleaned_datasets_module.R")
-  # in data_cleaning_pesticides.R, the merged data was all in one script, need to merge cleaned data from this driver script. 
+  # in data_cleaning_pesticides.R, the merged data was all in one script, need to merge cleaned data from this driver script, 
+  # thinking this will require changnig the datasets called in the function to their new names 
   
   
+
+
 
 
 
