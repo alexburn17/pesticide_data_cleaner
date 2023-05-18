@@ -1,4 +1,6 @@
-# driver script for calling pesticide cleaning data functions
+# BeeLab 
+# Driver script for calling pesticide cleaning data functions
+# 05/15/2023
 
 library(tidyverse)
 library(dplyr)
@@ -9,70 +11,74 @@ library(reshape2)
 setwd("~/Documents/GitHub/pesticide_data_cleaner")
 
 
-# Read in Datasets:
-## Read in Cornell Results Dataset !NOTE! - find more general solution to white space/column headers
-#pest_Results <- read.csv("data/pesticide_results_2021.csv", header = TRUE, stringsAsFactors = FALSE, skip = 1)
-
-## Read in Tosi Datasets 
-tosi_lethal <- read.csv("data/Tosi_lethal.csv", header = TRUE, stringsAsFactors = FALSE, skip = 1)
-
-tosi_sublethal <- read.csv("data/Tosi_sublethal.csv", header = TRUE, stringsAsFactors = FALSE)
-
-## Read in Description Dataset (NHBS descriptions)
-pest_Desc <- read.csv("data/pestDesc.csv", header = TRUE, stringsAsFactors = FALSE)
-
-## Read in additional description information (classification info in Google Sheet from Colin)
-pest_Desc_additionalinfo <- read.csv("data/pestDesc_additioninfo.csv", header = TRUE, stringsAsFactors = FALSE)
-
-## Read in updated description information - Colin 
-pest_Desc_updated <- read.csv("data/updated_descriptions_4-1-23.csv")
-
-
 # source modules for data cleaning process
-source("R/cornell_results_cleaning_module.R")
-source("R/tosi_LD50_cleaning_module.R")
-source("R/tosi_LOAEL_cleaning_module.R")
-source("R/NHBS_description_cleaning_module.R")
-source("R/updated_pest_desc_cleaning_module.R")
+source("R/CornellPesticideResultsCleaningModule.R")
+source("R/TosiLD50CleaningModule.R")
+source("R/TosiLOAELCleaningModule.R")
+source("R/NHBSdescCleaningModule.R")
+source("R/UpdatedPesticideDescCleaningModule.R")
 
-
-
-
-#dataCleaner.R
-#data_cleaner()
-
-
+# source module for data merging process 
+source("R/MergingCleanedDatasets.R")
 
 
 ################################################################################
-# Program Body
+# Program Body for Data Cleaning 
 ################################################################################
-# some comment about over arching goal
+# In this section, the script is calling on functions from modules to clean datasets. 
 
-#  what this line does
-pest_Results_cleaned <- pest_results_cleaner(pesticide_results = "data/pesticide_results_2021.csv", long_form = FALSE)
-
-# comment
-tosi_lethal_cleaned <- tosi_lethal_cleaner(tosi_lethal)
-
-tosi_sublethal_cleaned <- tosi_LOAEL_cleaner(tosi_sublethal)
-NHBS_cleaned <- NHBS_description_cleaner(pest_Desc)
-pest_Desc_updated_cleaned <- updated_pest_desc_cleaner(pest_Desc_updated)
-  
-
-# !NOTE -- COLIN! -- need to double check where pest_Desc_additionalinfo comes into play, was not cleaned in the modulated functions 
-  
-  
-# Removing Old Datasets 
-rm(pest_Results, tosi_lethal, tosi_sublethal, pest_Desc, pest_Desc_updated)
-  
-source("R/merging_cleaned_datasets_module.R")
-  # in data_cleaning_pesticides.R, the merged data was all in one script, need to merge cleaned data from this driver script, 
-  # thinking this will require changnig the datasets called in the function to their new names 
-  
-  
+# Calling the function pest_results_cleaner to clean the Cornell Pesticide Results
+# Parameters: 
+# pest_results: Data In 
+# long_form: transition Cornell data to long form 
+# Output: cleaned Cornell pesticide results
+pesticideResultsCleaned <- pest_results_cleaner(pesticide_results = "data/PesticideResults2021.csv", long_form = TRUE)
 
 
+# Calling the function tosi_lethal_cleaner to clean Tosi Lethal (LD50) data 
+# Parameters: 
+# tosi_lethal: Data In 
+# Output: Cleaned Tosi Lethal (LD50) data
+tosiLethalCleaned <- tosi_lethal_cleaner(tosi_lethal = "data/TosiLethal.csv")
+
+
+# Calling the function tosi_sublethal_cleaner to clean Tosi Sublethal (LOAEL) data 
+# Parameters: 
+# tosi_sublethal: Data In 
+# Output: Cleaned Tosi SubLethal (LOAEL) data 
+tosiSubLethalCleaned <- tosi_LOAEL_cleaner(tosi_sublethal = "data/TosiSubLethal.csv")
+
+
+# Calling the function NHBS_desctiption_cleaner to clean NHBS description data
+# Parameters: 
+# pest_Desc: Data In 
+# Output: Cleaned NHBS descriptions 
+NHBSdescCleaned <- NHBS_description_cleaner(pest_Desc = "data/NHBSpesticideDescriptions.csv")
+
+
+# Calling the function updated_pest_desc_cleaner to clean Updated Pesticide Description Data 
+# Parameters: 
+# pest_Desc_updated: Data In 
+# Output: Cleaned Updated Pesticide Description Information 
+updatedPesticideDescCleaned <- updated_pest_desc_cleaner(pest_Desc_updated = "data/UpdatedDescriptions_4-1-23.csv")
+  
+
+
+################################################################################
+# Program Body for Cleaned Data Merging 
+################################################################################
+
+# Calling on the function cleaned_data_merger to merge the cleaned datasets one at a time. 
+# Parameters: 
+# pest_Desc_combined: Data In -- Merge of pesticide description data from pesticideResultsCleaned
+# tosi_combined: Data in from -- Merge of tosi (LD50 and LOAEL) data from tosiLethalCleaned and tosiSubLethalCleaned
+# tosiDesc_combined: Data in from -- Merge of pesticide description data and tosi data from pest_Desc_combined and tosi_combined
+# pest_DescResults_combined: Data in from -- Merge of description data, tosi data and Cornell Results into one dataset 
+# Output: pest_DescResults_combined dataset, complete merge of all data 
+cleaned_data_merged <- cleaned_data_merger(pest_Desc_combined = TRUE, #if statements still need to be created for each  of these in modular script
+                                           tosi_combined = TRUE,      
+                                           tosiDesc_combined = TRUE, 
+                                           pest_DescResults_combined = TRUE)
 
 
 
@@ -81,4 +87,7 @@ source("R/merging_cleaned_datasets_module.R")
 #### PROGRAM BODY: ####
 # number_adder(num1 = 2, num2 = 3)
 
+## Naming Structures 
+#dataCleaner.R
+#data_cleaner()
 
